@@ -3,20 +3,40 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule)
+    path: '',
+    redirectTo: '/checklist',
+    pathMatch: 'full',
   },
   {
-    path: '',
-    redirectTo: 'home',
-    pathMatch: 'full'
+    path: 'checklist',
+    loadChildren: () =>
+      import('./pages/checklist/checklist.module').then(
+        (m) => m.ChecklistPageModule
+      ),
+  },
+  {
+    path: 'contact',
+    loadChildren: () =>
+      import('./pages/contact/contact.module').then((m) => m.ContactPageModule),
+  },
+  {
+    path: 'intro',
+    loadChildren: () =>
+      import('./pages/intro/intro.module').then((m) => m.IntroPageModule),
+  },
+  {
+    path: 'checklist/:id',
+    loadChildren: () =>
+      import('./pages/checklist/checklist.module').then(
+        (m) => m.ChecklistPageModule
+      ),
   },
 ];
 
 @NgModule({
   imports: [
-    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules }),
   ],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
