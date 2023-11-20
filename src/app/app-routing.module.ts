@@ -4,7 +4,7 @@ import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: '/checklist',
+    redirectTo: '/todo',
     pathMatch: 'full',
   },
   {
@@ -30,6 +30,11 @@ const routes: Routes = [
       import('./pages/checklist/checklist.module').then(
         (m) => m.ChecklistPageModule
       ),
+  },
+  {
+    path: 'todo',
+    loadChildren: () =>
+      import('./todo/todo.module').then((m) => m.TodoPageModule),
   },
 ];
 
