@@ -1,3 +1,4 @@
+// src/app/todo/todo.page.ts
 import { Component } from '@angular/core';
 import { SQLiteService } from '../services/sqlite.service';
 
@@ -20,10 +21,11 @@ export class TodoPage {
   addTodo(): void {
     const taskName = prompt('Enter task name:');
     if (taskName) {
-      this.sqliteService
-        .addTodo(taskName)
-        .then(() => this.loadTodos())
-        .catch((error) => console.error('Error adding todo', error));
+      console.log('Adding todo:', taskName);
+      this.saveTodoAndSync(taskName);
+      // this.sqliteService.addTodo(taskName)
+      //   .then(() => this.loadTodos())
+      //   .catch(error => console.error('Error adding todo', error));
     }
   }
 
@@ -46,5 +48,12 @@ export class TodoPage {
       .clearTodos()
       .then(() => this.loadTodos())
       .catch((error) => console.error('Error clearing todos', error));
+  }
+
+  saveTodoAndSync(taskName: string): void {
+    this.sqliteService
+      .addTodo(taskName)
+      .then(() => console.log('Todo added and synced successfully'))
+      .catch((error) => console.error('Error adding and syncing todo', error));
   }
 }
