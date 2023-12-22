@@ -2,12 +2,15 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.ionic.starter',
-  appName: 'MyFirstApp',
+  appName: 'IonicLocalStorageExample',
   webDir: 'www',
   server: {
     androidScheme: 'https',
   },
   plugins: {
+    CapacitorHttp: {
+      enabled: true,
+    },
     CapacitorSQLite: {
       iosDatabaseLocation: 'Library/CapacitorDatabase',
       iosIsEncryption: true,

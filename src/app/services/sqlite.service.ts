@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {
   CapacitorSQLite,
   capConnectionOptions,
 } from '@capacitor-community/sqlite';
+import { CapacitorHttp } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -10,7 +12,14 @@ import {
 export class SQLiteService {
   //private db: any;
   db = CapacitorSQLite;
-  constructor() {
+  // jika menggunakan physical device, silahkan menggunakan tethering
+  // lalu cek ip address dari laptop/pc yang digunakan
+  // untuk windows, gunakan perintah ipconfig
+  // untuk linux, gunakan perintah ifconfig
+  //private apiUrl = '/todo';
+  // jika menggunakan emulator, silahkan menggunakan localhost
+  private apiUrl = 'http://192.168.43.40/todo/api.php';
+  constructor(private http: HttpClient) {
     this.initializeDatabase();
   }
 
@@ -90,5 +99,58 @@ export class SQLiteService {
       statement: query,
       values: [],
     });
+  }
+
+  async addTodoAndSync(taskName: string): Promise<void> {
+    await this.addTodo(taskName); // Add to local SQLite database
+    await this.syncTodosNative(); // Sync with the remote API
+  }
+
+  private async syncTodosNative(): Promise<void> {
+    const options = {
+      url: this.apiUrl,
+      headers: { 'Content-Type': 'application/json' },
+    };
+
+    const todos = await this.getTodos(); // Get all local todos
+
+    // Send each todo to the API
+    for (const todo of todos) {
+      let payload = { task_name: todo.task_name };
+      const sendValue = {
+        ...options,
+        data: payload,
+      };
+      console.log('Syncing todo value:', JSON.stringify(payload));
+      const response = await CapacitorHttp.request({
+        ...sendValue,
+        method: 'POST',
+      });
+      console.log('Todo synced successfully');
+      console.log('response', response);
+    }
+  }
+
+  private async syncTodos(): Promise<void> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+
+    const todos = await this.getTodos(); // Get all local todos
+
+    // Send each todo to the API
+    for (const todo of todos) {
+      let payload = { task_name: todo.task_name };
+      console.log('Syncing todo value:', JSON.stringify(payload));
+      this.http.post(this.apiUrl, payload, { headers }).subscribe(
+        () => {
+          // Handle success, e.g., mark the todo as synced
+          console.log('Todo synced successfully');
+        },
+        (error) => {
+          console.error('Error syncing todo:', JSON.stringify(error));
+        }
+      );
+    }
   }
 }

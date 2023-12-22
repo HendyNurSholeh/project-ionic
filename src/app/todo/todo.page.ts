@@ -52,7 +52,7 @@ export class TodoPage {
 
   saveTodoAndSync(taskName: string): void {
     this.sqliteService
-      .addTodo(taskName)
+      .addTodoAndSync(taskName)
       .then(() => console.log('Todo added and synced successfully'))
       .catch((error) => console.error('Error adding and syncing todo', error));
   }

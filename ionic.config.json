@@ -1,5 +1,5 @@
 {
-  "name": "MyFirstApp",
+  "name": "IonicLocalStorageExample",
   "integrations": {
     "capacitor": {}
   },
